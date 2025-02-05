@@ -26,6 +26,11 @@ The following diagram illustrates the **overall pipeline** of TerrainDiffuser, f
 ## Installation
 
 Coming soon...
+Currently preparing for open use.
+
+## Paper
+
+Coming soon? maybe?
 
 ## Acknowledgement
 
