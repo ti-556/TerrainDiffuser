@@ -28,13 +28,14 @@ def main():
     
     print("Non-jitted benchmark:")
     execution_time = timeit.timeit(lambda: forward_fn(params, x, xf, emb).block_until_ready(), number=10)
-    print(f"Non-jit forward pass time: {execution_time / 100:.6f} seconds per run")
+    print(f"Non-jit forward pass time: {execution_time / 10:.6f} seconds per run")
     
     print("Jit benchmark:")
     jit_forward(params, x, xf, emb).block_until_ready()
-    execution_time = timeit.timeit(lambda: jit_forward(params, x,xf, emb).block_until_ready(), number=10)
-    print(f"Jit forward pass time: {execution_time / 100:.6f} seconds per run")
+    jit_execution_time = timeit.timeit(lambda: jit_forward(params, x,xf, emb).block_until_ready(), number=10)
+    print(f"Jit forward pass time: {jit_execution_time / 10:.6f} seconds per run")
     
-
+    print(f"Jit speedup gain: {execution_time/jit_execution_time:.2f}x")
+    
 if __name__ == "__main__":
     main()
