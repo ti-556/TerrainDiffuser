@@ -1,0 +1,30 @@
+{
+    "version": 1,
+    "disable_existing_loggers": false,
+    "formatters": {
+        "file_output": {
+            "format": "%(asctime)s - %(name)s: %(message)s"
+        },
+        "console": {
+            "format": "%(message)s"
+        }
+    },
+    "handlers": {
+        "console": {
+            "class": "logging.StreamHandler",
+            "formatter": "console",
+            "stream": "ext://sys.stdout",
+            "level": "DEBUG"
+        },
+        "file": {
+            "class": "logging.FileHandler",
+            "filename": "logs/training.log",
+            "formatter": "file_output",
+            "level": "INFO"
+        }
+    },
+    "root": {
+        "level": "DEBUG",
+        "handlers": ["console", "file"]
+    }
+}

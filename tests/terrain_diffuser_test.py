@@ -9,7 +9,7 @@ def main():
     key, subkey1, subkey2, subkey3, subkey4, subkey5 = jax.random.split(key, 6)
     x = jax.random.normal(subkey1, (8, 32, 32, 64))
     emb = jax.random.normal(subkey2, (8, 77, 128))
-    xf = jax.random.normal(subkey3, (8, 16, 16, 32))
+    xf = jax.random.normal(subkey3, (8, 32, 32, 48))
     t = jax.random.uniform(subkey4, (8, ))
     
     model = TerrainDiffuser(
@@ -20,7 +20,7 @@ def main():
         channel_mult = [2, 2, 2],
         time_emb_mult = 4,
         num_blocks = [4, 4, 4],
-        cond_resolutions = {"16": 32},
+        cond_resolutions = {"32": 16, "16": 32},
         p_dropout = 0.1,
         epsilon = 1e-5,
         reduction = 16,

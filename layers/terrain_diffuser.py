@@ -23,8 +23,30 @@ class TerrainDiffuser(nn.Module):
     num_heads: int = 1
     skip_scaling: float = 1/jnp.sqrt(2)
     
+    def _extract_feat_maps(self, feat_maps, resolution):
+        """
+        Extracts the feature tensor from the input feat_maps NCHW to NHWC unpadded tensor corresponding to resolution
+        """
+        feature_channels = self.cond_resolutions.get(str(resolution))
+        if feature_channels is None:
+            return None
+        start_index = 0
+        for key, value in sorted(self.cond_resolutions.items(), key=lambda kv: int(kv[0]),  reverse=True):
+            if int(key) > resolution:
+                start_index += value
+            else:
+                break
+            
+        res_feat_maps = feat_maps[:, :resolution, :resolution, start_index:start_index+feature_channels]
+        return res_feat_maps
+    
     @nn.compact
     def __call__(self, x, timesteps, text_emb, feat_maps, train:bool=True):
+        """
+        NOTE: feat_maps will be one big jnp array with shape (NHWC) where The resolutions will be padded to img_resolution
+        and stacked across the channel dimension (dim=3). The feat_maps must be concated in descending resolution
+        """
+        
         time_emb = SinusoidalEmbedding(d_model=self.model_channels, max_time=10000)(timesteps)
         time_emb = nn.Sequential([
             nn.Dense(features=self.model_channels * self.time_emb_mult),
@@ -71,7 +93,7 @@ class TerrainDiffuser(nn.Module):
                     use_bias=self.use_bias,
                     reduction=self.reduction,
                     num_heads=self.num_heads
-                )(x, time_emb, text_emb, feat_maps, train)
+                )(x, time_emb, text_emb, self._extract_feat_maps(feat_maps, resolution), train)
                 skip_connections.append(x)
                 
         # Middle blocks for the Unet
@@ -87,7 +109,7 @@ class TerrainDiffuser(nn.Module):
             use_bias=self.use_bias,
             reduction=self.reduction,
             num_heads=self.num_heads
-        )(x, time_emb, text_emb, feat_maps, train)
+        )(x, time_emb, text_emb, self._extract_feat_maps(feat_maps, resolution), train)
         x = UnetBlock(
             model_channels=self.model_channels * mult,
             p_dropout=self.p_dropout,
@@ -120,7 +142,7 @@ class TerrainDiffuser(nn.Module):
                     use_bias=self.use_bias,
                     reduction=self.reduction,
                     num_heads=self.num_heads
-                )(jnp.concat((x, skip_connections.pop() * self.skip_scaling), axis=-1), time_emb, text_emb, feat_maps, train)
+                )(jnp.concat((x, skip_connections.pop() * self.skip_scaling), axis=-1), time_emb, text_emb, self._extract_feat_maps(feat_maps, resolution), train)
             
             # Upsample when level is not 0
             if level > 0:
@@ -136,7 +158,7 @@ class TerrainDiffuser(nn.Module):
                     use_bias=self.use_bias,
                     reduction=self.reduction,
                     num_heads=self.num_heads
-                )(x, time_emb, text_emb, feat_maps, train)
+                )(x, time_emb, text_emb, self._extract_feat_maps(feat_maps, resolution), train)
                 
         x = nn.Sequential([
             nn.GroupNorm(num_groups=self.num_groups),
