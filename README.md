@@ -1,37 +1,24 @@
-# TerrainDiffuser
+# Terrain Diffuser
 
-**TerrainDiffuser** is a generative AI framework that enables **dynamic texture generation for 3D terrains** by leveraging **text prompts** and **elevation data**. Traditional terrain generation workflows often require manual sculpting and texturing, which can be time-consuming. TerrainDiffuser streamlines this process by generating high-quality, semantically consistent terrain textures directly from **digital elevation maps (DEMs) and textual descriptions**. This makes it a powerful tool for **game development, simulation environments, and rapid prototyping**.
+A configurable training pipeline for terrain-to-satellite image diffusion models.
 
-![Results](images/figures.jpg) 
+## Requirements
 
-## Key Features
+- Python 3.10  
+- PyTorch 2.1.2  
+- CUDA‐enabled GPU (optional, but highly recommended)
 
-- 🚀 **Text-Guided Terrain Texturing** – Generates terrain textures conditioned on user-provided text prompts (e.g., *"snowy peaks with a dense forest below"*).
-- 🏔 **Elevation-Aware Generation** – Ensures that textures are consistent with the terrain's height map, maintaining realism and structural coherence.
-- 🔄 **Flow Matching-Based Approach** – Utilizes **flow matching and multi-scale feature conditioning** to balance geometric constraints with artistic flexibility.
-- 🖼 **Super-Resolution Post-Processing** – Enhances generated textures using **SwinIR** to upscale outputs for **high-resolution 3D rendering**.
+Install the dependencies:
 
-## Model Overview
+```bash
+pip install -r requirements.txt
+```
 
-The following diagram illustrates the **overall pipeline** of TerrainDiffuser, from input elevation maps and text prompts to the final rendered 3D terrain. 3D rendering of the result is done using _Blender_.
+## Running Training
+You **must** invoke the trainer as a Python module. From the project root:
 
-![Model Pipeline](images/pipeline.jpg) 
+```bash
+python -m terrain_diffuser.training.trainer configs/default.yaml
+```
 
-## Applications
-
-- 🎮 **Game Development** – Rapidly prototype realistic terrain textures from simple sketches and text inputs.
-- 🌍 **Simulation & GIS** – Generate accurate terrain representations for geospatial analysis.
-- 🎨 **Procedural Content Creation** – Automate terrain design workflows for large-scale virtual environments.
-
-## Installation
-
-Coming soon...
-Currently preparing for open use.
-
-## Paper
-
-Coming soon? maybe?
-
-## Acknowledgement
-
-This work was conducted as part of Project Research A at Simo-Serra Laboratory, Waseda University.
+probably won't work so gotta debug!
