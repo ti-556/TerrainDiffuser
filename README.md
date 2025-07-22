@@ -39,3 +39,5 @@ Coming soon?
 ## Acknowledgement
 
 This work was conducted as a research project under Simo-Serra Laboratory with sponsorship from [Rikka Inc.](https://games.rikkainc.com/)
+
+![Rikka Logo](figures/rikkaicon.png)
